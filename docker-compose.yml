@@ -3,19 +3,23 @@ version: '3.8'
 services:
     nginx-proxy:
         build:
-            context: ./nginx
+          context: ./nginx
         restart: always
         container_name: nginx-proxy # always add this to allow letsencrypt connect to it.
         ports:
-            - 443:443
-            - 80:80
+          - 443:443
+          - 80:80
         volumes:
-            - certs:/etc/nginx/certs # stores certificates, private keys, and ACME account keys
-            - html:/usr/share/nginx/html # where store http-01 file, that content a token and key
-            - vhost:/etc/nginx/vhost.d # change vhost, content static and media location and required for CA
-            - /var/run/docker.sock:/tmp/docker.sock:ro
+          - certs:/etc/nginx/certs # stores certificates, private keys, and ACME account keys
+          - html:/usr/share/nginx/html # where store http-01 file, that content a token and key
+          - vhost:/etc/nginx/vhost.d # change vhost, content static and media location and required for CA
+          - /var/run/docker.sock:/tmp/docker.sock:ro
+          - student_media_volume:/home/alassane/project/mediafiles
+          - student_static_volume:/home/alassane/project/staticfiles
+          - backend_media_volume:/home/alassane/yattblog/mediafiles
+          - backend_static_volume:/home/alassane/yattblog/staticfiles
         networks: # To build nginx on its own separate network
-            - nginx_network
+          - nginx_network
 
     nginx-proxy-letsencrypt: # Provide and ssl certificate to each container-server detected by nginx-provide
         image: jrcs/letsencrypt-nginx-proxy-companion
@@ -28,12 +32,16 @@ services:
           - html:/usr/share/nginx/html # as above
           - vhost:/etc/nginx/vhost.d # as above
           - acme:/etc/acme.sh # to store acme.sh configuration and state
+          - student_media_volume:/home/alassane/project/mediafiles
+          - student_static_volume:/home/alassane/project/staticfiles
+          - backend_media_volume:/home/alassane/yattblog/mediafiles
+          - backend_static_volume:/home/alassane/yattblog/staticfiles
         depends_on:
           - nginx-proxy
         networks:
-            nginx_network: # To build nginx-proxy-letsencrypt on nginx_network
-                aliases:
-                    - nginx-proxy-letsencrypt
+          nginx_network: # To build nginx-proxy-letsencrypt on nginx_network
+            aliases:
+              - nginx-proxy-letsencrypt
 
 # Network create in docker host, to separate container between network
 networks:
@@ -44,3 +52,15 @@ volumes:
     certs:
     html:
     acme:
+    student_media_volume:
+        external: true
+        name: ma-student_media_volume
+    student_static_volume:
+        external: true
+        name: ma-student_static_volume
+    backend_media_volume:
+        external: true
+        name: backend_media_volume
+    backend_static_volume:
+        external: true
+        name: backend_static_volume
