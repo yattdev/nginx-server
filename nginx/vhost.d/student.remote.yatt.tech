@@ -1,0 +1,9 @@
+location /static/ {
+    alias /home/alassane/project/staticfiles/;
+    add_header 'Access-Control-Allow-Origin' '*';
+}
+
+location /media/ {
+    alias /home/alassane/project/mediafiles/;
+    add_header 'Access-Control-Allow-Origin' '*';
+}
