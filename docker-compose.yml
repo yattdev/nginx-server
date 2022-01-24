@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+    nginx-proxy:
+        build:
+            context: ./nginx
+        restart: always
+        ports:
+            - 443:443
+            - 80:80
+        volumes:
+            - certs:/etc/nginx/certs # stores certificates, private keys, and ACME account keys
+            - html:/usr/share/nginx/html # where store http-01 file, that content a token and key
+            - vhost:/etc/nginx/vhost.d # change vhost, content static and media location and required for CA
+            - /var/run/docker.sock:/tmp/docker.sock:ro
+        depends_on:
+            - app_django_blog
+        networks: # To build nginx on its own separate network
+            - nginx_network
+
+    nginx-proxy-letsencrypt: # Provide and ssl certificate to each container-server detected by nginx-provide
+        image: jrcs/letsencrypt-nginx-proxy-companion
+        restart: always
+        env_file:
+          - ./.env_file/local/.local.proxy-companion.env
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+          - certs:/etc/nginx/certs # as above
+          - html:/usr/share/nginx/html # as above
+          - vhost:/etc/nginx/vhost.d # as above
+          - acme:/etc/acme.sh # to store acme.sh configuration and state
+        depends_on:
+          - nginx-proxy
+        networks:
+            nginx_network: # To build nginx-proxy-letsencrypt on nginx_network
+                aliases:
+                    - nginx-proxy-letsencrypt
+
+# Network create in docker host, to separate container between network
+networks:
+    nginx_network:
+
+volumes:
+    vhost:
+    certs:
+    html:
+    acme:
