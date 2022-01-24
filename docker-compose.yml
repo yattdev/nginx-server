@@ -5,6 +5,7 @@ services:
         build:
             context: ./nginx
         restart: always
+        container_name: nginx-proxy # always add this to allow letsencrypt connect to it.
         ports:
             - 443:443
             - 80:80
