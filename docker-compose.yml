@@ -10,12 +10,15 @@ services:
           - 443:443
           - 80:80
         volumes:
+            #  -------- Nginx and ACME configuration -----------
           - certs:/etc/nginx/certs # stores certificates, private keys, and ACME account keys
           - html:/usr/share/nginx/html # where store http-01 file, that content a token and key
           - vhost:/etc/nginx/vhost.d # change vhost, content static and media location and required for CA
           - /var/run/docker.sock:/tmp/docker.sock:ro
+            #  -------- backend student app -----------
           - student_media_volume:/home/alassane/project/mediafiles
           - student_static_volume:/home/alassane/project/staticfiles
+            #  -------- blog backend -----------
           - backend_media_volume:/home/alassane/yattblog/mediafiles
           - backend_static_volume:/home/alassane/yattblog/staticfiles
         networks: # To build nginx on its own separate network
