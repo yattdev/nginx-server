@@ -1,0 +1,4 @@
+location /assets/ {
+    alias /home/alassane/kita/assets/;
+    add_header 'Access-Control-Allow-Origin' '*';
+}

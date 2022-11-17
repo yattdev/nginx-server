@@ -15,12 +15,14 @@ services:
           - html:/usr/share/nginx/html # where store http-01 file, that content a token and key
           - vhost:/etc/nginx/vhost.d # change vhost, content static and media location and required for CA
           - /var/run/docker.sock:/tmp/docker.sock:ro
-            #  -------- backend student app -----------
-          - student_media_volume:/home/alassane/project/mediafiles
-          - student_static_volume:/home/alassane/project/staticfiles
+            #  -------- backend student.ma app -----------
+          # - student.ma_media_volume:/home/alassane/project/mediafiles
+          # - student.ma_static_volume:/home/alassane/project/staticfiles
             #  -------- blog backend -----------
-          - backend_media_volume:/home/alassane/yattblog/mediafiles
-          - backend_static_volume:/home/alassane/yattblog/staticfiles
+          # - backend_media_volume:/home/alassane/yattblog/mediafiles
+          # - backend_static_volume:/home/alassane/yattblog/staticfiles
+            # Regie Kita Technologies
+          # - kita_assets_volume:/home/alassane/kita/assets
         networks: # To build nginx on its own separate network
           - nginx_network
 
@@ -35,10 +37,11 @@ services:
           - html:/usr/share/nginx/html # as above
           - vhost:/etc/nginx/vhost.d # as above
           - acme:/etc/acme.sh # to store acme.sh configuration and state
-          - student_media_volume:/home/alassane/project/mediafiles
-          - student_static_volume:/home/alassane/project/staticfiles
-          - backend_media_volume:/home/alassane/yattblog/mediafiles
-          - backend_static_volume:/home/alassane/yattblog/staticfiles
+          # - student.ma_media_volume:/home/alassane/project/mediafiles
+          # - student.ma_static_volume:/home/alassane/project/staticfiles
+          # - backend_media_volume:/home/alassane/yattblog/mediafiles
+          # - backend_static_volume:/home/alassane/yattblog/staticfiles
+          # - kita_assets_volume:/home/alassane/kita/assets
         depends_on:
           - nginx-proxy
         networks:
@@ -55,15 +58,18 @@ volumes:
     certs:
     html:
     acme:
-    student_media_volume:
-        external: true
-        name: ma-student_media_volume
-    student_static_volume:
-        external: true
-        name: ma-student_static_volume
-    backend_media_volume:
-        external: true
-        name: backend_media_volume
-    backend_static_volume:
-        external: true
-        name: backend_static_volume
+    # student.ma_media_volume:
+        # external: true
+        # name: ma-student.ma_media_volume
+    # student.ma_static_volume:
+        # external: true
+        # name: ma-student.ma_static_volume
+    # backend_media_volume:
+        # external: true
+        # name: backend_media_volume
+    # backend_static_volume:
+        # external: true
+        # name: backend_static_volume
+    # kita_assets_volume:
+        # external: true
+        # name: kita_assets_volume
